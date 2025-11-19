@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -26,11 +27,23 @@ class LibraryLoader {
         return OS_NAME.contains("nux");
     }
 
+    private static boolean isAndroid() {
+        boolean is;
+        try {
+            is = Files.exists(Paths.get("/", "system", "build.prop"));
+        } catch (SecurityException ignored) {
+            return false;
+        }
+        return isLinux() && is;
+    }
+
     private static String getPlatform() throws UnknownPlatformException {
         if (isWindows()) {
             return "windows";
         } else if (isMac()) {
             return "mac";
+        } else if (isAndroid()) {
+            return "android";
         } else if (isLinux()) {
             return "linux";
         } else {
