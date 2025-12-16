@@ -28,13 +28,12 @@ class LibraryLoader {
     }
 
     private static boolean isAndroid() {
-        boolean is;
+        if (!isLinux()) return false;
         try {
-            is = Files.exists(Paths.get("/", "system", "build.prop"));
-        } catch (SecurityException ignored) {
+            return Files.exists(Paths.get("/", "system", "build.prop"));
+        } catch (RuntimeException ignored) {
             return false;
         }
-        return isLinux() && is;
     }
 
     private static String getPlatform() throws UnknownPlatformException {
